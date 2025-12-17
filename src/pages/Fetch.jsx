@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import "../pages/css/fetch.css";
 
 /**
  * @typedef {Object} Post
@@ -15,11 +16,14 @@ const Fetch = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [editId, setEditId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     const savedPosts = JSON.parse(localStorage.getItem("posts") || "[]");
     if (savedPosts.length > 0) {
       setPosts(savedPosts);
+      setIsInitialized(true);
+      console.log("Data stored in local strage successfully", savedPosts);
     } else {
       const fetchData = async () => {
         setIsLoading(true);
@@ -27,6 +31,7 @@ const Fetch = () => {
           const res = await fetch(BASE_URL);
           const posts = await res.json();
           setPosts(posts);
+          setIsInitialized(true);
           if (res) {
             console.log(posts);
           }
@@ -40,17 +45,21 @@ const Fetch = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (isInitialized) {
+      localStorage.setItem("posts", JSON.stringify(posts));
+    }
+  }, [posts, isInitialized]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  localStorage.setItem("posts", JSON.stringify(posts));
 
   const handleUpdate = async (id) => {
     try {
       const res = await fetch(`${BASE_URL}/${id}`, {
         method: "PATCH",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: editTitle }),
       });
 
@@ -85,38 +94,42 @@ const Fetch = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="heading">Fetching Data</h1>
-      <ul>
-        {posts.map((post) => (
-          <li key={post.id}>
-            {editId === post.id ? (
-              <>
-                <input
-                  type="text"
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                />
-                <button onClick={() => handleUpdate(post.id)}>Save</button>
-              </>
-            ) : (
-              <>
-                {post.title}
-                <FontAwesomeIcon
-                  className="editBtn"
-                  icon={faPenToSquare}
-                  onClick={() => startEdit(post.id, post.title)}
-                />
-              </>
-            )}
-            <FontAwesomeIcon
-              className="editBtn"
-              icon={faTrash}
-              onClick={() => handleDelete(post.id)}
-            />
-          </li>
-        ))}
-      </ul>
+    <div className="main-container">
+      <div className="container">
+        <h1 className="heading">Fetching Data</h1>
+        <ul>
+          {posts.map((post) => (
+            <li key={post.id}>
+              {editId === post.id ? (
+                <>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                  />
+                  <button onClick={() => handleUpdate(post.id)}>Save</button>
+                </>
+              ) : (
+                <>
+                  {post.title}
+                  <div>
+                    <FontAwesomeIcon
+                      className="editBtn"
+                      icon={faPenToSquare}
+                      onClick={() => startEdit(post.id, post.title)}
+                    />
+                    <FontAwesomeIcon
+                      className="editBtn"
+                      icon={faTrash}
+                      onClick={() => handleDelete(post.id)}
+                    />
+                  </div>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };
