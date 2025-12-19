@@ -104,14 +104,22 @@ const Fetch = () => {
                 <>
                   <input
                     type="text"
+                    className="inputText"
                     value={editTitle}
                     onChange={(e) => setEditTitle(e.target.value)}
+                    onBlur={() => handleUpdate(post.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleUpdate(post.id);
+                    }}
+                    autoFocus
                   />
                   <button onClick={() => handleUpdate(post.id)}>Save</button>
                 </>
               ) : (
                 <>
-                  {post.title}
+                  <div className="postItems">
+                    {post.title}
+                  </div>
                   <div>
                     <FontAwesomeIcon
                       className="editBtn"

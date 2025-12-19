@@ -44,6 +44,26 @@
   font-family: Georgia, Times, "Times New Roman", serif;
 }
 
+.inputText {
+  width: 30rem;
+  border: none;
+  padding: 6px;
+  margin: -3px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 900;
+  font-family: Georgia, Times, "Times New Roman", serif;
+  color: #433d3d;
+  outline: none;
+}
+
+.postItems {
+  max-width: 35rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 li button {
   padding: 1px 17px;
   border: 1px solid #e7e7e7;
@@ -57,5 +77,5 @@ li button:hover {
   background-color: #ececec;
   color: rgb(71, 71, 71);
   cursor: pointer;
-  box-shadow: 0px 3px 13px #3b3b3b
+  box-shadow: 0px 3px 13px #3b3b3b;
 }
